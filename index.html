@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quel guide choisir ? — Assist Configurator</title>
+
+  <!-- Montserrat pour titres -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0f0f10;
+      --panel-bg: rgba(255,255,255,0.08);
+      --glass-bg: rgba(255,255,255,0.12);
+      --accent: #3A7AFE;
+      --accent-2: #1E3A8A;
+      --muted: #AAB3C7;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --max-width: 960px;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #0b0b0c 0%, #0f1113 100%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      color: #E6EEF8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+      box-sizing:border-box;
+    }
+
+    .shell{
+      width:100%;
+      max-width:var(--max-width);
+      margin:0 auto;
+    }
+
+    .container{
+      backdrop-filter: blur(10px) saturate(120%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border-radius:24px;
+      padding:28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+    }
+
+    h1{
+      margin:0;
+      font-family: "Montserrat", sans-serif;
+      font-size:20px;
+      letter-spacing:0.2px;
+      color: white;
+    }
+    p.lead{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .stepper{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .step{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.06);
+      box-shadow:0 1px 0 rgba(255,255,255,0.02) inset;
+    }
+    .step.active{ background: var(--accent); box-shadow: 0 6px 18px rgba(58,122,254,0.18); }
+
+    /* Layout */
+    .content{
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:20px;
+      align-items:start;
+    }
+
+    @media (max-width: 880px){
+      .content{ grid-template-columns: 1fr; }
+    }
+
+    /* Left: keywords */
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius: var(--radius);
+      padding:18px;
+      border:1px solid rgba(255,255,255,0.03);
+      min-height:220px;
+    }
+
+    .panel h2{
+      margin:0 0 8px 0;
+      font-family:"Montserrat",sans-serif;
+      font-size:16px;
+      color:white;
+    }
+    .panel p.small{
+      margin:0 0 12px 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .tag{
+      cursor:pointer;
+      user-select:none;
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:13px;
+      color: #E8F0FF;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.03);
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      backdrop-filter: blur(6px);
+      min-width: 120px;
+      text-align:center;
+    }
+    .tag:hover{ transform: translateY(-4px); box-shadow: 0 14px 24px rgba(18,24,35,0.45); }
+    .tag.selected{
+      background: linear-gradient(180deg, rgba(58,122,254,0.14), rgba(30,58,138,0.08));
+      border: 1px solid rgba(58,122,254,0.28);
+      box-shadow: 0 10px 30px rgba(58,122,254,0.12);
+      color: #FFFFFF;
+      transform: translateY(-2px);
+    }
+
+    /* Controls */
+    .actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 16px;
+      border-radius:12px;
+      background: linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;
+      font-weight:600;
+      border:none;
+      cursor:pointer;
+      font-size:14px;
+      box-shadow: 0 12px 30px rgba(26,54,145,0.20);
+      transition: transform .12s ease, opacity .12s ease;
+    }
+    .btn.secondary{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--muted);
+      font-weight:600;
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    /* Right: preview / recommendation */
+    .aside{
+      position:relative;
+      min-height:220px;
+    }
+    .card{
+      border-radius:16px;
+      padding:16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 8px 24px rgba(2,6,23,0.6);
+      min-height:140px;
+    }
+
+    .rec-list{ display:flex; flex-direction:column; gap:12px; margin-top:12px; }
+    .rec{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:12px;
+      border-radius:12px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .rec .meta{
+      max-width: 60%;
+    }
+    .rec h3{
+      margin:0;
+      font-family:"Montserrat",sans-serif;
+      font-size:14px;
+      color:white;
+    }
+    .rec p{
+      margin:6px 0 0 0;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .rec .buy{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:10px;
+      font-weight:700;
+      font-size:13px;
+      color:white;
+      background: linear-gradient(90deg,var(--accent),var(--accent-2));
+      text-decoration:none;
+    }
+
+    /* Small helper */
+    .hint{ font-size:12px; color:var(--muted); margin-top:8px; }
+
+    /* Animations */
+    .fade-in{ animation:fadeIn .38s ease both; }
+    .slide-up{ animation:slideUp .38s cubic-bezier(.2,.9,.3,1) both; }
+    @keyframes fadeIn{ from{ opacity:0; transform: translateY(6px); } to{ opacity:1; transform:none; } }
+    @keyframes slideUp{ from{ opacity:0; transform: translateY(14px); } to{ opacity:1; transform:none; } }
+
+    /* footer small */
+    footer small{ color:var(--muted); display:block; margin-top:12px; font-size:12px; }
+
+    /* Accessibility focus */
+    .tag:focus{ outline: 2px solid rgba(58,122,254,0.3); outline-offset:3px; }
+
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="container" role="application" aria-label="Assistant choix de guide">
+      <header>
+        <div>
+          <h1>Quel guide vous convient ?</h1>
+          <p class="lead">Sélectionnez les mots-clés qui décrivent votre problème — nous vous recommandons les meilleurs guides.</p>
+        </div>
+        <div class="stepper" aria-hidden="true">
+          <span class="step active"></span>
+          <span class="step"></span>
+          <span class="step"></span>
+        </div>
+      </header>
+
+      <main class="content" id="app">
+        <!-- LEFT: keywords -->
+        <section class="panel" id="step1">
+          <h2>Sélectionnez vos mots-clés</h2>
+          <p class="small">Cliquez sur les mots-clés qui décrivent votre besoin (vous pouvez en choisir plusieurs).</p>
+
+          <div class="tags" id="tagsContainer" role="list">
+            <!-- tags injected by JS -->
+          </div>
+
+          <div class="actions">
+            <button class="btn" id="btnNext">Voir la recommandation</button>
+            <button class="btn secondary" id="btnReset">Réinitialiser</button>
+          </div>
+
+          <p class="hint">Design épuré • Montserrat pour les titres • Glassmorphism • Pas d'images</p>
+        </section>
+
+        <!-- RIGHT: recommendation / preview -->
+        <aside class="aside">
+          <div class="card slide-up" id="previewCard" aria-live="polite">
+            <h2 style="margin:0; font-size:15px; font-family:Montserrat">Recommandation</h2>
+            <p class="small" id="previewText">Choisissez des mots-clés à gauche pour générer une recommandation.</p>
+
+            <div class="rec-list" id="recList" aria-atomic="true">
+              <!-- recommandations insérées ici -->
+            </div>
+
+            <footer>
+              <small id="noteBuy">Nous expliquons pourquoi chaque guide est pertinent avant redirection.</small>
+            </footer>
+          </div>
+        </aside>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    /* ----- CONFIGURATION : guides, mots-clés, liens PayPal, descriptions ----- */
+    const GUIDES = [
+      {
+        id: "nettoyage-virus",
+        title: "Nettoyage Virus",
+        keywords: ["virus","infection","pc lent","écran figé","ecran figé"],
+        paypal: "https://www.paypal.com/ncp/payment/AMRWNJ4UPRCL6",
+        priceLabel: "Acheter",
+        desc: "Procédure pas à pas pour détecter et supprimer malwares, restaurer performance et sécurité."
+      },
+      {
+        id: "reinstallation-windows",
+        title: "Réinstallation Windows",
+        keywords: ["réinstaller windows","windows11","windows10","reinstaller windows"],
+        paypal: "https://www.paypal.com/ncp/payment/94P5TXWRHP9EW",
+        priceLabel: "Acheter",
+        desc: "Guide complet pour sauvegarder, réinstaller et restaurer votre environnement Windows."
+      },
+      {
+        id: "imprimante-bugs",
+        title: "Imprimante : connexion et bugs",
+        keywords: ["imprimante"],
+        paypal: "https://www.paypal.com/ncp/payment/U8DKYM7WET7GG",
+        priceLabel: "Acheter",
+        desc: "Résolution des problèmes de connexion, drivers, file d'attente et erreurs courantes."
+      },
+      {
+        id: "liberer-espace",
+        title: "Libérer de l'espace",
+        keywords: ["stockage plein","espace saturé","plus de place","liberer de l'espace"],
+        paypal: "https://www.paypal.com/ncp/payment/Q8Y8VBR3AP38L",
+        priceLabel: "Acheter",
+        desc: "Techniques sûres pour récupérer de l'espace disque sans perte de données, nettoyage et optimisation."
+      },
+      {
+        id: "connexion-wifi-reseaux",
+        title: "Connexion Wi-Fi et Réseaux",
+        keywords: ["wi-fi","wifi","connexion réseau","connexion wi-fi","connexion wifi","réseau"],
+        paypal: "https://www.paypal.com/ncp/payment/LRJJKZDZ39TCU",
+        priceLabel: "Acheter",
+        desc: "Diagnostic des problèmes Wi-Fi, configuration d'accès, conseils pour stabilité et sécurité."
+      },
+      {
+        id: "reparer-peripheriques",
+        title: "Réparer ses périphériques Windows",
+        keywords: ["périphériques","peripheriques","clavier","souris","clé usb","clé usb","usb"],
+        paypal: "https://www.paypal.com/ncp/payment/WKH7TG4JEYWZA",
+        priceLabel: "Acheter",
+        desc: "Dépannage hardware/software pour claviers, souris, périphériques USB et périphériques externes."
+      },
+      {
+        id: "maintenance-classique",
+        title: "Maintenance classique",
+        keywords: ["lenteur","bugs","pc lent","ecran figé","écran figé","lent"],
+        paypal: "https://www.paypal.com/ncp/payment/SMRYNACXSES8N",
+        priceLabel: "Acheter",
+        desc: "Checklist de maintenance : mises à jour, pilotes, nettoyages et optimisations rapides."
+      },
+      {
+        id: "recuperation-donnees",
+        title: "Récupération de données",
+        keywords: ["récupérer mes fichiers","perte de fichier","perte de données","recuperer mes fichiers","recuperation"],
+        paypal: "https://www.paypal.com/ncp/payment/CUSCHMAD2UFBQ",
+        priceLabel: "Acheter",
+        desc: "Méthodes pour restaurer des fichiers effacés ou disques endommagés, prévention et sauvegarde."
+      },
+      {
+        id: "optimisation-gaming",
+        title: "Optimisations gaming / e-sport",
+        keywords: ["gaming","gain de performances","gain de fps","fps","optimisation gaming"],
+        paypal: "https://www.paypal.com/ncp/payment/CXQRC8TJXBNK2",
+        priceLabel: "Acheter",
+        desc: "Réglages pour réduire latence, augmenter FPS et prioriser ressources pour jeux compétitifs."
+      }
+    ];
+
+    /* Liste de mots-clés affichés en UI (ordre / wording) */
+    const UI_KEYWORDS = [
+      "Virus", "Infection", "PC lent", "Écran figé", "Lenteur", "Bugs",
+      "Imprimante", "Wi-Fi", "Connexion réseau", "Périphériques",
+      "Clavier", "Souris", "Clé USB", "Stockage plein", "Espace saturé",
+      "Gaming", "Gain de FPS", "Récupérer mes fichiers", "Perte de données",
+      "Réinstaller Windows", "Windows11", "Windows10"
+    ];
+
+    /* ----- Utilitaires ----- */
+    function normalize(s){
+      return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    }
+
+    /* Build tags UI */
+    const tagsContainer = document.getElementById('tagsContainer');
+    const selected = new Set();
+
+    UI_KEYWORDS.forEach(k => {
+      const el = document.createElement('button');
+      el.className = 'tag fade-in';
+      el.type = 'button';
+      el.textContent = k;
+      el.setAttribute('aria-pressed','false');
+
+      el.addEventListener('click', () => {
+        if (el.classList.contains('selected')){
+          el.classList.remove('selected');
+          el.setAttribute('aria-pressed','false');
+          selected.delete(k);
+        } else {
+          el.classList.add('selected');
+          el.setAttribute('aria-pressed','true');
+          selected.add(k);
+        }
+        updatePreviewHint();
+      });
+
+      el.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          el.click();
+        }
+      });
+
+      tagsContainer.appendChild(el);
+    });
+
+    /* Preview text updates */
+    const previewText = document.getElementById('previewText');
+    const recList = document.getElementById('recList');
+
+    function updatePreviewHint(){
+      const n = selected.size;
+      if (n === 0){
+        previewText.textContent = 'Choisissez des mots-clés à gauche pour générer une recommandation.';
+      } else {
+        previewText.textContent = `${n} mot${n>1?'s':''} clé sélectionné${n>1?'s':''} — cliquez sur "Voir la recommandation".`;
+      }
+    }
+
+    /* Next / Reset buttons */
+    const btnNext = document.getElementById('btnNext');
+    const btnReset = document.getElementById('btnReset');
+
+    btnReset.addEventListener('click', () => {
+      selected.clear();
+      document.querySelectorAll('.tag.selected').forEach(t => {
+        t.classList.remove('selected');
+        t.setAttribute('aria-pressed','false');
+      });
+      recList.innerHTML = '';
+      previewText.textContent = 'Choisissez des mots-clés à gauche pour générer une recommandation.';
+      document.querySelectorAll('.step').forEach((s,i)=> s.classList.toggle('active', i===0));
+    });
+
+    btnNext.addEventListener('click', () => {
+      if (selected.size === 0) {
+        // micro feedback
+        const firstTag = document.querySelector('.tag');
+        firstTag.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 360 });
+        return;
+      }
+      computeRecommendations();
+      // stepper update
+      document.querySelectorAll('.step').forEach((s,i)=> s.classList.toggle('active', i===1));
+    });
+
+    /* Compute recommendations based on selected keywords */
+    function computeRecommendations(){
+      recList.innerHTML = '';
+      const selectedNormalized = Array.from(selected).map(normalize);
+
+      // set to collect unique guides
+      const found = new Map();
+
+      // for each guide, check if any keyword matches any selected UI keyword
+      GUIDES.forEach(g => {
+        const guideKeywordsNorm = g.keywords.map(normalize);
+        const matched = selectedNormalized.filter(sel => {
+          // also accept partial matches (e.g. "pc lent" vs "lent")
+          return guideKeywordsNorm.some(kw => sel.includes(kw) || kw.includes(sel) || sel.includes(kw.split(' ')[0]));
+        });
+        if (matched.length > 0) {
+          found.set(g.id, {...g, matched: Array.from(new Set(matched))});
+        }
+      });
+
+      // Special fallback: if nothing found, suggest "Maintenance classique"
+      if (found.size === 0) {
+        const fallback = GUIDES.find(g => g.id === 'maintenance-classique');
+        if (fallback) found.set(fallback.id, {...fallback, matched:['suggestion']});
+      }
+
+      // order: keep GUIDES order but only those found
+      const ordered = GUIDES.filter(g => found.has(g.id)).map(g => found.get(g.id));
+
+      // render UI
+      ordered.forEach(g => {
+        const rec = document.createElement('div');
+        rec.className = 'rec fade-in';
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+
+        const h3 = document.createElement('h3');
+        h3.textContent = g.title;
+        meta.appendChild(h3);
+
+        const p = document.createElement('p');
+        p.textContent = g.desc;
+        meta.appendChild(p);
+
+        // matched keywords small hint
+        if (g.matched && g.matched.length){
+          const small = document.createElement('div');
+          small.style.marginTop = '8px';
+          small.style.fontSize = '12px';
+          small.style.color = 'var(--muted)';
+          small.textContent = 'Correspondance : ' + g.matched.join(', ');
+          meta.appendChild(small);
+        }
+
+        const buy = document.createElement('a');
+        buy.className = 'buy';
+        buy.href = g.paypal || '#';
+        buy.target = '_blank';
+        buy.rel = 'noopener noreferrer';
+        buy.textContent = g.priceLabel || 'Acheter';
+
+        rec.appendChild(meta);
+        rec.appendChild(buy);
+
+        recList.appendChild(rec);
+      });
+
+      // Scroll preview into view for mobile
+      document.querySelector('.aside').scrollIntoView({behavior:'smooth', block:'center'});
+
+      // update preview intro
+      previewText.textContent = ordered.length > 1
+        ? `Nous recommandons ${ordered.length} guides pour vos besoins.`
+        : `Nous recommandons 1 guide pour vos besoins.`;
+
+      // stepper show final
+      document.querySelectorAll('.step').forEach((s,i)=> s.classList.toggle('active', i===2));
+    }
+
+    // init
+    updatePreviewHint();
+
+    /* Optional: allow pressing Enter on first tag to show recommendations */
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.classList.contains('tag')) {
+        // no-op, click handled by tag handler
+      }
+    });
+  </script>
+</body>
+</html>
