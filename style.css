@@ -3,7 +3,7 @@
 
 body {
     margin: 0;
-    padding: 0;
+    padding: 60px 20px 40px 20px; /* ajoute 60px en haut, 40px en bas, 20px sur les côtés */
     background: #F3F6FB;
     font-family: 'Inter', sans-serif;
     color: #0F172A;
